@@ -33,6 +33,10 @@ until git clone https://github.com/WPO-Foundation/webpagetest.git
 do
     sleep 1
 done
+cd /var/www/webpagetest
+git checkout origin/release
+git branch -D master
+git pull origin release
 cd ~
 until git clone https://github.com/WPO-Foundation/wptserver-install.git
 do
@@ -40,24 +44,24 @@ do
 done
 
 # Configure the OS and software
-echo cat wptserver-install/configs/sysctl.conf | sudo tee -a /etc/sysctl.conf
+cat wptserver-install/configs/sysctl.conf | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
-echo cat wptserver-install/configs/fstab | sudo tee -a /etc/fstab
+cat wptserver-install/configs/fstab | sudo tee -a /etc/fstab
 sudo mount -a
-echo cat wptserver-install/configs/security/limits.conf | sudo tee -a /etc/security/limits.conf
-echo cat wptserver-install/configs/default/beanstalkd | sudo tee /etc/default/beanstalkd
+cat wptserver-install/configs/security/limits.conf | sudo tee -a /etc/security/limits.conf
+cat wptserver-install/configs/default/beanstalkd | sudo tee /etc/default/beanstalkd
 sudo service beanstalkd restart
 
 #php
-echo cat wptserver-install/configs/php/php.ini | sudo tee /etc/php/7.0/fpm/php.ini
-echo cat wptserver-install/configs/php/pool.www.conf | sed "s/%USER%/$USER/" | sudo tee /etc/php/7.0/fpm/pool.d/www.conf
+cat wptserver-install/configs/php/php.ini | sudo tee /etc/php/7.0/fpm/php.ini
+cat wptserver-install/configs/php/pool.www.conf | sed "s/%USER%/$USER/" | sudo tee /etc/php/7.0/fpm/pool.d/www.conf
 sudo service php7.0-fpm restart
 
 #nginx
-echo cat wptserver-install/configs/nginx/fastcgi.conf | sudo tee /etc/nginx/fastcgi.conf
-echo cat wptserver-install/configs/nginx/fastcgi_params | sudo tee /etc/nginx/fastcgi_params
-echo cat wptserver-install/configs/nginx/nginx.conf | sed "s/%USER%/$USER/" | sudo tee /etc/nginx/nginx.conf
-echo cat wptserver-install/configs/nginx/sites.default | sudo tee /etc/nginx/sites-available/default
+cat wptserver-install/configs/nginx/fastcgi.conf | sudo tee /etc/nginx/fastcgi.conf
+cat wptserver-install/configs/nginx/fastcgi_params | sudo tee /etc/nginx/fastcgi_params
+cat wptserver-install/configs/nginx/nginx.conf | sed "s/%USER%/$USER/" | sudo tee /etc/nginx/nginx.conf
+cat wptserver-install/configs/nginx/sites.default | sudo tee /etc/nginx/sites-available/default
 sudo service nginx restart
 
 echo 'Setup is complete.  Reboot is recommended'
