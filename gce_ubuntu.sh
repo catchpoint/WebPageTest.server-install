@@ -38,7 +38,7 @@ if [ $STORAGE_BUCKET != '' ]; then
     echo "archive_s3_key=$STORAGE_KEY" >> /var/www/webpagetest/www/settings/settings.ini
     echo "archive_s3_secret=$STORAGE_SECRET" >> /var/www/webpagetest/www/settings/settings.ini
     echo "archive_s3_bucket=$STORAGE_BUCKET" >> /var/www/webpagetest/www/settings/settings.ini
-done
+fi
 
 cp /var/www/webpagetest/www/settings/locations.ini.GCE-sample /var/www/webpagetest/www/settings/locations.ini
 INSTANCE_NAME=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/name" -H "Metadata-Flavor: Google")
