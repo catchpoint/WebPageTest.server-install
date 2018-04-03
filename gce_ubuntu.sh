@@ -10,6 +10,7 @@ echo '          https://console.cloud.google.com/storage/settings?_ga=2.24773632
 echo '    2. Select Interoperability.'
 echo '    3. If you have not set up interoperability before, click Enable interoperability access.'
 echo '    4. Click Create a new key.'
+printf "\n"
 read -p "Bucket name (leave empty if not using cloud storage): " STORAGE_BUCKET
 if [ $STORAGE_BUCKET != '' ]; then
     while [[ $STORAGE_KEY == '' ]]
