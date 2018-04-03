@@ -1,0 +1,23 @@
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        server_name _;
+        #access_log off;
+
+        root /var/www/webpagetest/www;
+
+        location ~ \.php$ {
+                limit_except GET POST HEAD {
+                        deny all;
+                }
+                #fastcgi_pass   127.0.0.1:9000;
+                fastcgi_pass    unix:/run/php/php7.0-fpm.sock;
+                #fastcgi_index  index.php;
+                fastcgi_param  SCRIPT_FILENAME  /var/www/webpagetest/www$fastcgi_script_name;
+                fastcgi_param  HTTP_MOD_REWRITE On;
+                include fastcgi.conf;
+        }
+
+        include /var/www/webpagetest/www/nginx.conf;
+}
