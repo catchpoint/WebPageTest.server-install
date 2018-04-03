@@ -29,7 +29,7 @@ sudo date
 cd ~
 wget https://raw.githubusercontent.com/WPO-Foundation/wptserver-install/master/ubuntu.sh
 chmod +x ubuntu.sh
-./ubuntu.sh
+. ./ubuntu.sh
 
 if [ $STORAGE_BUCKET != '' ]; then
     echo "archive_days=1" >> /var/www/webpagetest/www/settings/settings.ini
