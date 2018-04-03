@@ -15,7 +15,7 @@ until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--forc
 do
     sleep 1
 done
-until sudo apt-get install -y git screen nginx beanstalkd zip unzip \
+until sudo apt-get install -y git screen nginx beanstalkd zip unzip curl \
     php-fpm php-apcu php-sqlite3 php-curl php-gd php-zip php-mbstring php-xml \
     imagemagick ffmpeg libjpeg-turbo-progs libimage-exiftool-perl \
     software-properties-common python2.7 python-pip python-software-properties python-numpy python-scipy \
@@ -76,6 +76,10 @@ APIKEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 cat wptserver-install/webpagetest/settings.ini | sed "s/%LOCATIONKEY%/$LOCATIONKEY/" | tee /var/www/webpagetest/www/settings/settings.ini
 cat wptserver-install/webpagetest/keys.ini | sed "s/%SERVERSECRET%/$SERVERSECRET/" | sed "s/%SERVERKEY%/$SERVERKEY/" | sed "s/%APIKEY%/$APIKEY/" | tee /var/www/webpagetest/www/settings/keys.ini
 cat wptserver-install/webpagetest/locations.ini | tee /var/www/webpagetest/www/settings/locations.ini
+
+# Crontab to tickle the WebPageTest cron jobs every 5 minutes
+CRON_ENTRY="*/5 * * * * curl --silent http://127.0.0.1/work/getwork.php"
+( crontab -l | grep -v -F "$CRON_ENTRY" ; echo "$CRON_ENTRY" ) | crontab -
 
 clear
 echo 'Setup is complete. System reboot is recommended.'
