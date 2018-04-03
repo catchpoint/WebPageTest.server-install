@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Prompt for the configuration options
-echo "Automatic server install and configuration."
+echo "WebPageTest automatic server install."
 
 # Pre-prompt for the sudo authorization so it doesn't prompt later
 sudo date
@@ -15,15 +15,19 @@ until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--forc
 do
     sleep 1
 done
-until sudo apt-get install -y git screen nginx beanstalkd\
+until sudo apt-get install -y git screen nginx beanstalkd zip unzip \
     php-fpm php-apcu php-sqlite3 php-curl php-gd php-zip php-mbstring php-xml \
     imagemagick ffmpeg libjpeg-turbo-progs libimage-exiftool-perl \
-    software-properties-common python2.7 python-pip python-software-properties \
+    software-properties-common python2.7 python-pip python-software-properties python-numpy python-scipy \
     psmisc
 do
     sleep 1
 done
-until sudo pip install monotonic pillow psutil requests ujson
+until sudo pip install --upgrade pip
+do
+    sleep 1
+done
+until sudo pip install monotonic pillow psutil requests ujson pyssim
 do
     sleep 1
 done
@@ -64,5 +68,19 @@ cat wptserver-install/configs/nginx/nginx.conf | sed "s/%USER%/$USER/" | sudo te
 cat wptserver-install/configs/nginx/sites.default | sudo tee /etc/nginx/sites-available/default
 sudo service nginx restart
 
-echo 'Setup is complete.  Reboot is recommended'
+# WebPageTest Settings
+LOCATIONKEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+SERVERKEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+SERVERSECRET=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+APIKEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+cat wptserver-install/webpagetest/settings.ini | sed "s/%LOCATIONKEY%/$LOCATIONKEY/" | tee /var/www/webpagetest/www/settings/settings.ini
+cat wptserver-install/webpagetest/keys.ini | sed "s/%SERVERSECRET%/$SERVERSECRET/" | sed "s/%SERVERKEY%/$SERVERKEY/" | sed "s/%APIKEY%/$APIKEY/" | tee /var/www/webpagetest/www/settings/keys.ini
+cat wptserver-install/webpagetest/locations.ini | tee /var/www/webpagetest/www/settings/locations.ini
 
+clear
+echo 'Setup is complete. System reboot is recommended.'
+echo 'The locations need to be configured manually in /var/www/webpagetest/www/settings/locations.ini'
+echo 'The settings can be tweaked in /var/www/webpagetest/www/settings/settings.ini'
+printf "\n"
+echo "The location key to use when configuring agents is: $LOCATIONKEY"
+echo "An API key to use for automated testing is: $APIKEY"
