@@ -42,8 +42,7 @@ if [ $STORAGE_BUCKET != '' ]; then
 fi
 
 cp /var/www/webpagetest/www/settings/locations.ini.GCE-sample /var/www/webpagetest/www/settings/locations.ini
-INSTANCE_NAME=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/name" -H "Metadata-Flavor: Google")
-PROJECT_ID=$(curl "http://metadata.google.internal/computeMetadata/v1/project/project-id" -H "Metadata-Flavor: Google")
+INTERNAL_HOSTNAME=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/hostname" -H "Metadata-Flavor: Google")
 clear
 echo 'Setup is complete. System reboot is recommended.'
 echo 'Locations have been configured for all of the GCE regions in /var/www/webpagetest/www/settings/locations.ini'
@@ -51,5 +50,5 @@ echo 'The settings can be tweaked if needed in /var/www/webpagetest/www/settings
 printf "\n"
 echo "The location key to use when configuring agents is: $LOCATIONKEY"
 echo "The 'wpt_data' metadata for agents to connect to this server is:"
-echo "    wpt_server=$INSTANCE_NAME.c.$PROJECT_ID.internal wpt_key=$LOCATIONKEY"
+echo "    wpt_server=$INTERNAL_HOSTNAME wpt_key=$LOCATIONKEY"
 echo "An API key to use for automated testing is: $APIKEY"
