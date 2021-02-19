@@ -42,6 +42,7 @@ done
 # Configure the OS and software
 cat wptserver-install/configs/sysctl.conf | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
+mkdir -p /var/www/webpagetest/www/tmp
 cat wptserver-install/configs/fstab | sudo tee -a /etc/fstab
 sudo mount -a
 cat wptserver-install/configs/security/limits.conf | sudo tee -a /etc/security/limits.conf
