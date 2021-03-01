@@ -22,7 +22,7 @@ do
     sleep 1
 done
 until sudo apt-get install -y git screen nginx beanstalkd zip unzip curl \
-    php-fpm php-apcu php-sqlite3 php-curl php-gd php-zip php-mbstring php-xml \
+    php-fpm php-apcu php-sqlite3 php-curl php-gd php-zip php-mbstring php-xml php-redis \
     imagemagick ffmpeg libjpeg-turbo-progs libimage-exiftool-perl \
     software-properties-common psmisc
 do
