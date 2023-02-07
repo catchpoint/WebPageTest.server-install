@@ -50,7 +50,7 @@ cat wptserver-install/configs/default/beanstalkd | sudo tee /etc/default/beansta
 sudo service beanstalkd restart
 
 #php
-PHPVER=$(find /etc/php/7.* -maxdepth 0 -type d -printf '%f')
+PHPVER=$(find /etc/php/8.* /etc/php/7.* -maxdepth 0 -type d | head -n 1 | tr -d -c 0-9\.)
 cat wptserver-install/configs/php/php.ini | sudo tee /etc/php/$PHPVER/fpm/php.ini
 cat wptserver-install/configs/php/pool.www.conf | sed "s/%USER%/$USER/" | sudo tee /etc/php/$PHPVER/fpm/pool.d/www.conf
 sudo service php$PHPVER-fpm restart
